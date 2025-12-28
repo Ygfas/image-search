@@ -236,10 +236,10 @@ class App extends React.Component {
     const techLogos = [
       { node: <SiReact color='white'/>, title: "React", href: "https://react.dev" },
       { node: <SiTailwindcss color='white'/>, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-      {node: <SiGithub color='white'/>, title: 'Github', href:''},
-      {node: <SiUnsplash color='white'/>, title: 'Unsplash', href:''},
-      {node: <SiShadcnui color='white'/>, title: 'ShadCn', href:''},
-      {node: <SiVite color='white'/>, title: 'Vite', href:''},
+      { node: <SiGithub color='white' />, title: 'Github', href:'https://github.com/Ygfas/'},
+      { node: <SiUnsplash color='white' />, title: 'Unsplash', href:'https://unsplash.com/id'},
+      { node: <SiShadcnui color='white' />, title: 'ShadCn', href:'https://ui.shadcn.com/'},
+      { node: <SiVite color='white' />, title: 'Vite', href:'https://vite.dev/'},
      
     ];
     // const relatedImages = this.state.images.filter(img => img.id !== this.state.selectedImage?.id);
@@ -391,7 +391,7 @@ class App extends React.Component {
                   />
                  
 
-                  <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-h-[85%] bg-white/10 from-neutral-500 to-cyan-300 rounded-xl shadow-2xl z-30 flex flex-col overflow-hidden">
+                  <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-[90%] max-h-[85%] from-neutral-500 to-cyan-300 rounded-xl shadow-2xl z-30 flex flex-col overflow-hidden">
 
 
                     <div className="flex justify-between items-center p-4 border-b bg-white shrink-0">
@@ -417,7 +417,10 @@ class App extends React.Component {
                     </div>
 
                     {/* Content Area */}
-                    
+                    <SpotlightCard
+                    spotlightColor='cyan'
+                    className='bg-white/10'>
+
                     <div className="overflow-y-auto custom-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                       {(
                         this.state.activeDockPanel === 'like'
@@ -456,6 +459,8 @@ class App extends React.Component {
                         </div>
                       )}
                     </div>
+                    </SpotlightCard>
+                    
                   </div>
                 </>
               )}
@@ -494,14 +499,10 @@ class App extends React.Component {
           <div className="fixed inset-0 z-50 pointer-events-none">
 
             <Ribbons
-              colors={['red', 'orange', 'yellow', 'green', 'cyan', 'blue', '#5c32c9']}
+              colors={['white','cyan']}
               baseThickness={30}
 
               effectAmplitude={0.7}
-
-
-
-
               speedMultiplier={0.3}
               maxAge={400}
               backgroundColor={[0, 0, 0, 0]}
