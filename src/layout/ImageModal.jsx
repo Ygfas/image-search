@@ -3,28 +3,41 @@ import ButtonCard from '../util/ButtonCard';
 import GlareHover from '../components/GlareHover'
 import ElectricBorder from '../components/ElectricBorder'
 
+
 class ImageModal extends React.Component {
+    
     constructor(props) {
         super(props);
+        this.containerRef = React.createRef();
         this.state = {
-            isZoomed: false
+            isZoomed: false,
+            highResLoaded: false
         };
+        
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.image.id !== this.props.image.id) {
+       
+        if (
+            prevProps.image?.id &&
+            this.props.image?.id &&
+            prevProps.image.id !== this.props.image.id
+        ) {
             this.setState({ isZoomed: false });
+            this.containerRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }
-
     toggleZoom = () => {
         this.setState(prevState => ({ isZoomed: !prevState.isZoomed }));
     }
 
 
     render() {
+       
+       
         const { image, onClose, relatedImages, onSelectRelated } = this.props;
         const { isZoomed } = this.state;
+       
 
 
         if (!image) return null;
@@ -32,30 +45,24 @@ class ImageModal extends React.Component {
         return (
 
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 group"
-                onClick={(e) => {
-                    e.stopPropagation();   
-                    this.handleImageClick(image);
-                }}>
-
-
-                <button
                     onClick={onClose}
-                    className="absolute top-5 right-5 text-white text-4xl hover:text-gray-300 z-50 font-bold"
                 >
-                    &times;
-                </button>
+                
+                
+              
 
 
 
-
+               
                 <ElectricBorder className=''
-                    color='cyan'
-                    speed={1}
-                    chaos={1}
-                    thickness={10}
+                    color="cyan"
+                    speed={0.6}
+                    chaos={0.3}
+                    thickness={4}
                     style={{ borderRadius: 0 }}>
-                    <div className=" bg-white/40 rounded-md  w-full max-w-4xl shadow-2xl overflow-y-auto relative animate-fade-in-down max-h-[95vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-                ">
+                    <div ref={this.containerRef} className=" bg-white/40 rounded-md  w-full max-w-4xl shadow-2xl overflow-y-auto relative animate-fade-in-down max-h-[95vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
+                "
+                        onClick={e => e.stopPropagation()}>
 
 
 
@@ -82,16 +89,17 @@ class ImageModal extends React.Component {
                                         <p className="text-xs text-white/65">@{image.user?.username}</p>
                                     </div>
                                 </div>
-                                <div className="text-white/90 text-sm italic ml-60">
-                                    {image.alt_description || 'Untitled Image'}
+                                <div className="text-white/90 text-sm italic ml-40">
+                                    { image.alt_description || 'Untitled Image'}
+
 
                                 </div>
 
                                 <div className="ml-2 opacity-100 transition-opacity duration-300 z-20">
 
-                                    <ButtonCard imageUrl={image.urls?.full} filename={`unsplash-${image.id}.jpg`}
+                                    <ButtonCard imageUrl={image.urls?.full} img={image}  filename={`unsplash-${image.id}.jpg `}
                                         onClick={this.handleDownload}
-                                        
+
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" id="download">
                                             <path
@@ -113,10 +121,20 @@ class ImageModal extends React.Component {
                                 onClick={this.toggleZoom}
                             >
 
+
                                 <img
                                     src={image.urls?.regular}
+                                    srcSet={`
+                                        ${image.urls.small} 400w,
+                                        ${image.urls.regular} 1080w
+                                    `}
+                                    sizes="(max-width: 768px) 100vw, 80vw"
+                                    decoding="async"
                                     alt={image.alt_description}
-                                    className={`object-contain transition-transform duration-300 ${isZoomed ? 'scale-150 cursor-zoom-out' : 'w-full h-full'}`}
+                                    className={`object-contain transition-transform duration-300 
+                                     ${isZoomed ? 'scale-140' : 'scale-100'}
+                                        cursor-zoom-${isZoomed ? 'out' : 'in'}
+                                    `}
                                 />
 
 
@@ -131,8 +149,8 @@ class ImageModal extends React.Component {
                                         <p className="text-sm text-gray-400">Memuat gambar terkait...</p>
                                     ) : (
                                         <div className="columns-2  items-center w-full h-full">
-                                            {relatedImages.slice(0, 20).map((relImg, idx) => (
-                                                <div key={idx} className="">
+                                            {relatedImages.slice(0, 20).map((relImg) => (
+                                                <div key={relImg.id} className="">
                                                     <GlareHover
                                                         glareColor='ffffff'
                                                         glareOpacity={0.7}
@@ -143,6 +161,8 @@ class ImageModal extends React.Component {
 
                                                         <img
                                                             src={relImg.urls?.thumb}
+                                                            loading="lazy"
+                                                            decoding="async"
                                                             alt="Related"
                                                             className="w-full h-full object-cover  hover:cursor-pointer "
 

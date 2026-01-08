@@ -1,4 +1,5 @@
 import React from 'react';
+import App from '../App'
 import FluidGlass from '../components/FluidGlass';
 import StarBorder from '../components/StarBorder'
 import TextType from '../components/TextType';

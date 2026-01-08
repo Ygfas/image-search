@@ -28,6 +28,14 @@ function toRoman(num) {
 }
 
 class Pagination extends React.Component {
+    #page 
+    #onPageChange
+    getPage() {
+        return this.#page;
+    }
+    getOnPageChange() {
+        return this.#onPageChange;
+    }
     render() {
         const { page, onPageChange } = this.props;
         return (

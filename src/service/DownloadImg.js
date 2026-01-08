@@ -1,6 +1,14 @@
 class DownloadImg {
-  constructor(url, filename = '') {
-    this.url = url;
-    this.filename = filename;
+  #filename;
+  #url;
+  constructor(url, filename = "") {
+    this.#url = url;
+    this.#filename = filename;
+  }
+  getUrl() {
+    return this.#url;
+  }
+  getFilenamel() {
+    return this.#filename;
   }
 }

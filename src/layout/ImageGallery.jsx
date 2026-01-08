@@ -3,11 +3,15 @@ import ButtonDownload from '../util/ButtonDownload.jsx';
 import ButtonLike from '../util/ButtonLike.jsx';
 import ButtonBookmark from '../util/ButtonBookmark.jsx';
 import ClickSpark from '../components/ClickSpark.jsx';
+import memoize from 'memoize-one';
 
 
 class ImageGallery extends React.Component {
+    getLikedSet = memoize((likedImages) => new Set(likedImages.map(i => i.id)));
+    getBookmarkedSet = memoize((bookmarkedImages) => new Set(bookmarkedImages.map(i => i.id)));
+
     render() {
-        // Ambil props onImageClick dari App.js
+
         const {
             images,
             onImageClick,
@@ -15,29 +19,40 @@ class ImageGallery extends React.Component {
             onBookmark,
             likedImages,
             bookmarkedImages,
-            disableClick=false
+            disableClick = false
         } = this.props;
+       
+        const likedSet = this.getLikedSet(likedImages);
+        const bookmarkedSet = this.getBookmarkedSet(bookmarkedImages);
 
         return (
             <div className="flex flex-wrap gap-4 px-7 text-left font-mono mx-auto justify-evenly">
                 <div className="columns-2 sm:columns-2 lg:columns-5 gap-4 mb-30">
-                    
+
                     {images.map((img) => (
                         <div key={img.id} className="card bg-base-100 mb-4 break-inside-avoid">
                             <figure className='relative group overflow-hidden shadow-md hover:shadow-xl transition-all duration-300'>
 
 
                                 <img
-                                    src={img.urls?.small}
-                                    alt={img.alt_description || 'Unsplash Image'}
-                                   
+                                    src={img.urls?.full}
+                                    srcSet={`
+                                        ${img.urls.small} 400w,
+                                        ${img.urls.regular} 800w
+                                    `}
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                                    loading="lazy"
+                                    decoding="async"
+
+
                                     onClick={() => {
                                         if (!disableClick && onImageClick) {
                                             onImageClick(img)
                                         }
                                     }}
-                                    className={`relative group w-full h-full object-cover transition-transform duration-500 group-hover:scale-110${disableClick ? 'cursor-default' : 'cursor-pointer'
-                                        }`}
+                                    className={`w-full h-full object-cover transition-transform duration-300 
+                                            ${!disableClick ? 'cursor-pointer group-hover:scale-105' : 'cursor-default'}
+                                            `}
 
 
                                 />
@@ -46,25 +61,28 @@ class ImageGallery extends React.Component {
                                 <div
                                     className="w-full absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
                                 </div>
-                                <ButtonBookmark
-                                    img={img}
-                                    onBookmark={onBookmark}
-                                    isBookmarked={bookmarkedImages.some(i => i.id === img.id)}
-                                />
                                 <ButtonLike
                                     img={img}
                                     onLike={onLike}
-                                    isLiked={likedImages.some(i => i.id === img.id)}
+                                    isLiked={likedSet.has(img.id)}
+                                />
+
+                                <ButtonBookmark
+                                    img={img}
+                                    onBookmark={onBookmark}
+                                    isBookmarked={bookmarkedSet.has(img.id)}
                                 />
 
                                 <ButtonDownload
                                     imageUrl={img.urls.full}
+                                    img={img}
+                                    
                                     filename={`unsplash-${img.alt_description}.jpg`}
                                 />
 
                                 <div className="z-10 absolute w-full bottom-1 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
                                     <div
-                                        className="flex items-center gap-3 bg-black/50 backdrop-blur-md p-2 rounded-lg text-white max-w-full "
+                                        className="flex items-center gap-3 bg-black/50  p-2 rounded-lg text-white max-w-full "
                                         onClick={() => onImageClick(img)}>
 
 
@@ -91,7 +109,7 @@ class ImageGallery extends React.Component {
                                                 @{img.user?.username}
                                             </h4>
                                             <p className='text-gray-300 text-xs'>
-                                                {img.alt_description}
+                                             
                                             </p>
                                         </div>
                                     </div>

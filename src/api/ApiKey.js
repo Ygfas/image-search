@@ -1,7 +1,7 @@
 // ApiKey1.js
 const apiKeyObject = {
-  apiKey1: "BsGiOlp6sTry3gTElsB7oL7Hbi34bxl4lxhWoEni3CE",
-  apiKey2: "V3EA1DrGS1SHxgEEYscWbJgAL7XI5QPQ08sPPAar0Yk",
+  apiKey1: "q4SPLqO6BWgKHSM7lr90OGPiYW7Kh-uHE9pw2bBmboE",
+  apiKey2: "-7QZobQZ8vxLgj4eTdt-S4TnKy6iowl7QmaizPyhMCk",
   apiKey3: "adilEobfPqq7iksYeqaEDuRSoxUuTWl067eXdfbO7oQ",
 };
 

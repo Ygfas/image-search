@@ -1,12 +1,14 @@
 
 import React from 'react';
 import './style/App.css';
-import ImageService from './api/ImageService';
+// import ImageService from './api/ImageService';
+import { imageService } from './api/ImageService';
 import SearchBar from './layout/SearchBar';
 import ImageGallery from './layout/ImageGallery';
 import Pagination from './layout/Pagination';
 import ClickSpark from './components/ClickSpark';
 import ImageModal from './layout/ImageModal';
+import Header from './layout/Header';
 import Aurora from './components/Aurora';
 import GradualBlur from './components/GradualBlur';
 import SplashCursor from './components/SplashCursor'
@@ -33,12 +35,13 @@ import Dock from './components/Dock';
 
 
 
-const ACCESS_KEY = new Token2()
+// const ACCESS_KEY = new Token2()
 
 class App extends React.Component {
+
   constructor(props) {
     super(props);
-    this.imageService = new ImageService(ACCESS_KEY.getApiKey());
+    // this.imageService = new ImageService(ACCESS_KEY.getApiKey());
     this.state = {
       images: [],
       query: '',
@@ -50,15 +53,16 @@ class App extends React.Component {
       selectedImage: null,
       relatedImages: [],
       fallingTriggered: false,
-      likedImages: [],        // list image object
-      bookmarkedImages: [],  // list image object
+      likedImages: [],        
+      bookmarkedImages: [], 
       activeDockPanel: null,
-      // 'l
+     
 
     };
   }
 
   componentDidMount() {
+    
     this.loadRandomImages(1);
     const savedLikes = localStorage.getItem("likedImages");
     const savedBookmarks = localStorage.getItem("bookmarkedImages");
@@ -70,7 +74,7 @@ class App extends React.Component {
   }
 
   async loadRandomImages(page = 1) {
-    const images = await this.imageService.getRandomImages();
+    const images = await imageService.getRandomImages();
     this.setState(prev => {
       const updatedHistory = [...prev.randomHistory];
       updatedHistory[page - 1] = images;
@@ -114,7 +118,7 @@ class App extends React.Component {
 
   handleSearch = async (query) => {
     this.resetFallingText();
-    const images = await this.imageService.searchImages(query, 1);
+    const images = await imageService.getRandomImages();
     this.setState({
       images,
       query,
@@ -170,7 +174,7 @@ class App extends React.Component {
     }
   }
 
-  // 3. Logika Toggle Like (Tambah jika belum ada, hapus jika sudah ada)
+ 
   toggleLike = (img) => {
     this.setState((prevState) => {
       const isExist = prevState.likedImages.find((i) => i.id === img.id);
@@ -184,7 +188,7 @@ class App extends React.Component {
     });
   };
 
-  // 4. Logika Toggle Bookmark
+
   toggleBookmark = (img) => {
     this.setState((prevState) => {
       const isExist = prevState.bookmarkedImages.find((i) => i.id === img.id);
@@ -204,17 +208,17 @@ class App extends React.Component {
   resetFallingText = () => {
     this.setState({ fallingTriggered: false });
   };
+  
 
 
 
   render() {
+    
 
     const items = [
 
       { icon: <VscHome size={18} color='white' />, label: 'Home', onClick: () => window.location.href = '/' },
-      // { icon: <VscArchive size={18} color='white' />, label: 'Archive', onClick: () => alert('Archive!') },
-      // { icon: <VscAccount size={18} color='white' />, label: 'Profile', onClick: () => alert('Profile!') },
-      // { icon: <VscSettingsGear size={18} color='white' />, label: 'Settings', onClick: () => alert('Settings!') },
+     
       {
         icon: <VscBookmark color='white' size={18} />,
         label: 'Bookmark',
@@ -251,20 +255,20 @@ class App extends React.Component {
         <div className="my-0 mx-auto w-full justify-center ">
 
           <div className="fixed inset-0 -z-10">
-            {/* <Aurora
+            <Aurora
 
               colorStops={['cyan', '#15f4ee', 'cyan']}
               amplitude={1}
               blend={0.9}
-            /> */}
-            <Balatro
-              isRotate
+            />
+            {/* <Balatro
+              // isRotate
               spinRotation={1}
 
 
 
 
-            />
+            /> */}
 
 
 
@@ -274,14 +278,16 @@ class App extends React.Component {
 
           <ClickSpark
             sparkColor='#fff'
-            sparkSize={50}
+            sparkSize={20}
             sparkRadius={15}
             sparkCount={8}
             duration={400}
           >
 
-
+           
+              <Header />
             <section className="relative min-h-screen">
+             
 
 
               <div className="px-2 py-8">
@@ -301,8 +307,8 @@ class App extends React.Component {
                 >
                   <FallingText
                     key={this.state.fallingTriggered ? 'floating' : 'fell'}
-                    text="Selamat Datang di PictMe, Cari Gambar dan Download Gambar Gratis Ga Bikin Ribet tinggal Click"
-                    highlightWords={["Selamat", "PictMe", "Gratis", "Click", "Ribet", "Download"]}
+                    text="PictMe helps you discover, save, and download inspiring images for your creative workflow, powered by Unsplash."
+                    highlightWords={[ "PictMe", "discover", "save",'download','creative','workflow','powered','unsplash']}
                     trigger={this.state.fallingTriggered ? "auto" : "none"}
                     backgroundColor="transparent"
                     wireframes={false}
@@ -310,7 +316,9 @@ class App extends React.Component {
                     fontSize="clamp(1.5rem, 4vw, 3rem)"
                     mouseConstraintStiffness={0.1}
                   />
+                   
                 </div>
+               
 
 
                 <SearchBar onSearch={this.handleSearch} onFilterClick={this.handleFilter} />
@@ -339,7 +347,7 @@ class App extends React.Component {
 
                   />
                 )}
-
+               
                 <ImageGallery
                   images={this.state.images}
                   onImageClick={this.handleImageClick}
@@ -372,6 +380,7 @@ class App extends React.Component {
               </div>
               
               <div className='h-24'></div>
+             
               <Dock
                 className="fixed bottom-30 left-1/2 -translate-x-1/2 z-40"
                 items={items}
@@ -500,7 +509,7 @@ class App extends React.Component {
 
             <Ribbons
               colors={['white','cyan']}
-              baseThickness={30}
+              baseThickness={40}
 
               effectAmplitude={0.7}
               speedMultiplier={0.3}
